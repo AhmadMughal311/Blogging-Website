@@ -1,0 +1,28 @@
+name: wf-pr-validation
+on:
+  pull_request:
+    branches:
+      - develop
+jobs:
+  linting-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Create package.json
+        run: npm init -y
+      - name: Install HTMLHint and Stylelint
+        run: |
+          npm install --save-dev htmlhint 
+          npm install --save-dev stylelint 
+      - name: Lint HTML and CSS
+        run: |
+          npx htmlhint "**/*.html"
+          npx stylelint "**/*.css"
+  build-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Build Website
+        run: npx parcel build "./src/*.html" --dist-dir "./dev" --public-url "./"
